@@ -1,0 +1,20 @@
+{
+    "name":     "jazzy",
+    "version":  "0.1.0",
+    "description": "Modular web framework which makes your apps swing",
+    "keywords": ["web", "framework"],
+    "homepage": "http://github.com/raphaelmonrouzeau/jazzy",
+    "bugs":     "http://github.com/raphaelmonrouzeau/jazzy/issues",
+    "repository" : {
+        "type": "git",
+        "url":  "http://github.com/raphaelmonrouzeau/jazzy.git"
+    },
+    "author":   "Raphaël Monrouzeau <raphael.monrouzeau@gmail.com>",
+    "engines": {
+        "node": ">=0.6.17",
+        "npm":  ">=1.1.9"
+    },
+    "dependencies": {
+        "formaline": ">=0.6.4"
+    }
+}
