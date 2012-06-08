@@ -30,7 +30,7 @@ function load(data)
         console.log(e);
         throw e;
     }
-    return normalize(path.dirname(fs.realpathSync(data)), config_file_data);
+    return normalize(process.cwd(), config_file_data);
 }
 
 exports.load        = load;

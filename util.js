@@ -1,10 +1,12 @@
+var idString    = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$-_.+,";
+
 function newId(l)
 {
     var id = "", i, n;
     if (typeof l === 'undefined') l=8;
     for (i=0; i<l; i++) {
-        n = Math.floor(Math.random()*65);
-        id+="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$-_.+,"[n];
+        n = Math.floor(Math.random()*idString.length);
+        id+=idString[n];
     }
     return id;
 }
