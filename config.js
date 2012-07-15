@@ -12,7 +12,7 @@ function normalize(base, conf)
 {
     defaults.main.base = base;
 
-    jazutil.setdefaults(conf, defaults);
+    jazutil.setObjectDefaults(conf, defaults);
     return conf;
 }
 

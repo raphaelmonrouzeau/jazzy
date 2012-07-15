@@ -40,7 +40,7 @@ FormalineRouterPlugin.prototype.onBeginRouting = function(request, response)
     if (request.method !== 'POST')
         return;
 
-    jazutil.setdefaults(form_config, defaults);
+    jazutil.setObjectDefaults(form_config, defaults);
 
     this.form_config.listeners.loadend = function ( json, response, callback ) {
         // console.log( '\n\033[1;32mPost Done..\033[0m' );

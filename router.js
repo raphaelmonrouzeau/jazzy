@@ -4,6 +4,8 @@ var error   = require('./error');
 var fs      = require('fs');
 var jazutil = require('./util');
 
+require('./response');
+
 var defaults = {
     main: {
         base: process.cwd()
@@ -145,9 +147,9 @@ function plug_function_route(route, request, response)
 function plug_matching_route(routes, request, response, requestUrl)
 {
     for (var i=0; routes[i]; i++) {
-        var route = routes[i];
-        if (requestUrl.pathname.match(route.pattern)) {
-
+        var route = routes[i],
+            m     = requestUrl.pathname.match(route.pattern);
+        if (m) {
             var handlerType = typeof route.handler;
 
             if ( (handlerType!=='object') && (handlerType!=='function') ) {
@@ -157,6 +159,11 @@ function plug_matching_route(routes, request, response, requestUrl)
                                              handler_type: typeof route.handler }));
                 continue;
             }
+
+            delete m.index;
+            delete m.input;
+            request.args   = m.slice(1);
+            request.kwargs = requestUrl.query;
 
             if (route.coding) {
                 request.setEncoding(route.coding);
@@ -179,19 +186,6 @@ function plug_matching_route(routes, request, response, requestUrl)
                 route.plugin.onEndRouting();
             }
 
-            response.endWithJson = function(json) {
-                this.writeHead(200, {"Content-Type": "application/json"});
-                this.write(JSON.stringify(json));
-                this.end();
-            }
-
-            response.endWithJsonRpcError = function(id, error) {
-                return this.endWithJson({ id: id, result: null, error: error });
-            }
-
-            response.endWithJsonRpcResult = function(id, result) {
-                return this.endWithJson({ id: id, result: result, error: null });
-            }
             return true;
         }
     }
@@ -200,11 +194,9 @@ function plug_matching_route(routes, request, response, requestUrl)
 
 function router(conf)
 {
-    jazutil.setdefaults(conf, defaults);
+    jazutil.setObjectDefaults(conf, defaults);
 
     normalize_routes(conf);
-
-
 
     return function (request, response)
     {

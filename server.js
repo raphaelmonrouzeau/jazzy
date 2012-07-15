@@ -7,7 +7,7 @@ var jazutil = require('./util');
 var defaults = {
     server: {
         http: {
-            port: process.env.PORT || 80
+            port: 80
         },
         https: {
             port: 443
@@ -17,13 +17,20 @@ var defaults = {
 
 function start(conf, router)
 {
-    jazutil.setdefaults(conf, defaults);
+    jazutil.setObjectDefaults(conf, defaults);
     
     if (typeof conf.server.https.cert === 'string') {
         conf.server.https.cert = fs.readFileSync(conf.server.https.cert);
     }
     if (typeof conf.server.https.key === 'string') {
         conf.server.https.key = fs.readFileSync(conf.server.https.key);
+    }
+
+    if (typeof conf.server.http.port === 'string') {
+        m = conf.server.http.port.match(/^env:(.*)$/)
+        if (m) {
+            conf.server.http.port = process.env[m[1]];
+        }
     }
 
     http.createServer(router).listen(conf.server.http.port);
