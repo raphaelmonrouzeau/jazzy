@@ -2,7 +2,22 @@ jazzy - a web framework that makes your apps swing
 ==================================================
 
 Disclaimer: Jazzy is in early beta stage, documentation is non-existent, you
-want to look at other, more popular choices like connect.
+want to look at other, more popular choices like express/connect.
+
+## Logging
+
+```js
+    var logger = new Logger("/var/log/daemon/%Y/%m/%d.log");
+        
+    logger.mangler(function(log) {
+        if (typeof log === "string")
+            return { at: new Date(), ns: "socket.io", body: log }
+        log.at = new Date();
+        if (!log.hasOwnProperty('ns'))
+            log.ns = 'unknown';
+        return log;
+    });
+```
 
 ## Web applications
 
