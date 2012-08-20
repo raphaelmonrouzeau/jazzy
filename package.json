@@ -1,6 +1,6 @@
 {
     "name":     "jazzy",
-    "version":  "0.2.0",
+    "version":  "0.3.0",
     "description": "Modular web framework which makes your apps swing",
     "keywords": ["web", "framework"],
     "homepage": "http://github.com/raphaelmonrouzeau/jazzy",
@@ -15,7 +15,12 @@
         "npm":  ">=1.1.9"
     },
     "dependencies": {
-        "formaline": ">=0.6.4",
-        "argumentum": "latest"
+        "formaline":  "latest",
+        "argumentum": "latest",
+        "strftime":   "latest",
+        "mkdirp":     "latest",
+        "carrier":    "latest",
+        "mocha":      "latest",
+        "sax":        "latest"
     }
 }

@@ -50,7 +50,7 @@ var isHexString = exports.isHexString = function(s)
     ;
 }
 
-var validateHexString = exports.validateExString= function(str, options)
+var validateHexString = exports.validateHexString= function(str, options)
 {
     var l = str.length,
         m = str.match(/[0-9A-Ba-b]+/);

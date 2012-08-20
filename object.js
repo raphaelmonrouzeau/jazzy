@@ -1,29 +1,16 @@
-var idString    = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$-_.+,";
-
-var newId = exports.newId = function(l)
-{
-    var id = "", i, n;
-    if (typeof l === 'undefined') l=8;
-    for (i=0; i<l; i++) {
-        n = Math.floor(Math.random()*idString.length);
-        id+=idString[n];
-    }
-    return id;
-}
-
-var setObjectDefaults = exports.setObjectDefaults = function(dict1, dict2)
+var setDefaults = exports.setDefaults = function(dict1, dict2)
 {
     for (name in dict2) {
         if (typeof dict1[name] === 'undefined') {
             dict1[name] = dict2[name];
         } else if (typeof dict1[name] === 'object'
                 && typeof dict2[name] === 'object') {
-            setObjectDefaults(dict1[name], dict2[name]);
+            setDefaults(dict1[name], dict2[name]);
         }
     }
 }
 
-var validateObject = exports.validateObject = function(schema, values, hook)
+var validate = exports.validate = function(schema, values, hook)
 {
     var found_keys = [];
 

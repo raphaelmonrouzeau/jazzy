@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+
+var idstring = require("../idstring");
+
+console.log(idstring.pathSafe(9));
