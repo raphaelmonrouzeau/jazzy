@@ -19,6 +19,21 @@ want to look at other, more popular choices like express/connect.
     });
 ```
 
+## Custom errors
+
+```js
+   var NotFoundError   = CustomError("NotFoundError")
+     , NotOwnedError   = CustomError("NotOwnedError");
+   
+   Keywords.findById(label, function(doc) {
+       if (!doc)
+           return cb(NotFoundError("Keyword '%s' not found", label));
+       return cb(null, doc);
+   }
+```
+
+``CustomError`` uses the technique described by disfated here: http://stackoverflow.com/questions/464359/custom-exceptions-in-javascript .
+
 ## Web applications
 
 This is an example config file, you could put in you app's `etc/config.dev.json`:
