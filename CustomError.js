@@ -3,7 +3,7 @@
 //
 // Only works in V8 / Node.JS.
 //
-var CustomError = exports = module.exports = (function() {
+var CustomError = exports = module.exports = Error.createCustomError = (function() {
 
     function define(obj, prop, value) {
         Object.defineProperty(obj, prop, {
