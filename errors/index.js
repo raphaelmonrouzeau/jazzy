@@ -3,7 +3,7 @@
 //
 // Only works in V8 / Node.JS.
 //
-var CustomError = exports = module.exports = Error.createCustomError = (function() {
+var Define = exports.Define = Error.Define = (function() {
 
     function define(obj, prop, value) {
         Object.defineProperty(obj, prop, {
@@ -15,14 +15,14 @@ var CustomError = exports = module.exports = Error.createCustomError = (function
     }
 
     return function(name, init, proto) {
-        var CustomError;
+        var Define;
         proto = proto || {};
         function build(message) {
-            var self = this instanceof CustomError
+            var self = this instanceof Define
                 ? this
-                : Object.create(CustomError.prototype);
+                : Object.create(Define.prototype);
             Error.apply(self, arguments);
-            Error.captureStackTrace(self, CustomError);
+            Error.captureStackTrace(self, Define);
             if (message != undefined) {
                 define(self, 'message', String(message));
             }
@@ -33,15 +33,17 @@ var CustomError = exports = module.exports = Error.createCustomError = (function
             }
             return self;
         }
-        eval('CustomError = function ' + name + '() {' +
+        eval('Define = function ' + name + '() {' +
             'return build.apply(this, arguments); }');
-        CustomError.prototype = Object.create(Error.prototype);
-        define(CustomError.prototype, 'constructor', CustomError);
+        Define.prototype = Object.create(Error.prototype);
+        define(Define.prototype, 'constructor', Define);
         for (var key in proto) {
-            define(CustomError.prototype, key, proto[key]);
+            define(Define.prototype, key, proto[key]);
         }
-        Object.defineProperty(CustomError.prototype, 'name', { value: name });
-        return CustomError;
+        Object.defineProperty(Define.prototype, 'name', { value: name });
+        return Define;
     }
 
 })();
+
+var NotImplementedError = require("./NotImplementedError");
