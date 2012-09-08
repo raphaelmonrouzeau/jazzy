@@ -1,10 +1,15 @@
-jazzy - a web framework that makes your apps swing
-==================================================
+jazzy - a framework that makes your apps swing
+==============================================
 
 Disclaimer: Jazzy is in early beta stage, documentation is non-existent, you
-want to look at other, more popular choices like express/connect.
+want to look at other, more popular choices.
+
+Jazzy attempts to leverage your existing node skills and best choice of
+modules.
 
 ## Logging
+
+As of now Jazzy provides Logger objects.
 
 ```js
     var logger = new Logger("/var/log/daemon/%Y/%m/%d.log");
@@ -18,6 +23,9 @@ want to look at other, more popular choices like express/connect.
         return log;
     });
 ```
+
+However one of the goals of the future releases is to rather provide a Winston
+transport.
 
 ## Custom errors
 
@@ -154,12 +162,27 @@ This is an example config file, you could put in you app's `etc/config.dev.json`
 
 ## Goals
 
-Jazzy tries to trick you into writing more code inside modules, where they can
-be read and parsed at launch time, less dynamically. This is *not* for
-performance reasons but in an attempt to catch bugs at the earliest possible
-stage.
+Version 1 should provide:
 
-Jazzy puts more emphasis on modules or functions than objects.
+1. File Winston transport which uses strftime to parse file path.
+2. Importer / Updater / Yielder / ( Fetcher Parser ) for your cold webservices
+   needs.
+3. Scheduler.
+4. Tributes.
+5. JSON-RPC.
+6. Way to define errors and common error types.
+
+Version 2 should provide:
+
+1. Secure API calls with URL.
+2. Some more object and string helpers than the ones in underscore.
+3. Daemonize.
+
+Version 3 should provide:
+
+1. Helpers for web apps.
+2. Grunt support.
+3. Grok support.
 
 ## LICENSE - "BSD License"
 
