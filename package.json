@@ -1,7 +1,7 @@
 {
     "name":     "jazzy",
-    "version":  "0.3.3",
-    "description": "Modular web framework which makes your apps swing",
+    "version":  "0.3.4",
+    "description": "Web framework which makes your apps swing",
     "keywords": ["web", "framework"],
     "homepage": "http://github.com/raphaelmonrouzeau/jazzy",
     "bugs":     "http://github.com/raphaelmonrouzeau/jazzy/issues",
@@ -20,7 +20,7 @@
         "strftime":   "latest",
         "mkdirp":     "latest",
         "carrier":    "latest",
-        "mocha":      "latest",
+        "vows":       "latest",
         "sax":        "latest"
     }
 }

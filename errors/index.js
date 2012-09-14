@@ -46,4 +46,10 @@ var Define = exports.Define = Error.Define = (function() {
 
 })();
 
-var NotImplementedError = require("./NotImplementedError");
+var NotFoundError       = exports.NotFoundError         = require("./NotFoundError")
+  , ForbiddenError      = exports.ForbiddenError        = require("./ForbiddenError")
+  , TimeoutError        = exports.TimeoutError          = require("./TimeoutError")
+  , ConflictError       = exports.ConflictError         = require("./ConflictError")
+  , GoneError           = exports.GoneError             = require("./GoneError")
+  , LockedError         = exports.LockedError           = require("./LockedError")
+  , NotImplementedError = exports.NotImplementedError   = require("./NotImplementedError");
