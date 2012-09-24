@@ -15,12 +15,14 @@
         "npm":  ">=1.1.9"
     },
     "dependencies": {
-        "formaline":  "latest",
-        "argumentum": "latest",
-        "strftime":   "latest",
-        "mkdirp":     "latest",
-        "carrier":    "latest",
-        "vows":       "latest",
-        "sax":        "latest"
+        "formaline":        "latest",
+        "argumentum":       "latest",
+        "strftime":         "latest",
+        "mkdirp":           "latest",
+        "carrier":          "latest",
+        "vows":             "latest",
+        "sax":              "latest",
+        "coffee-script":    "latest",
+        "eco":              "latest"
     }
 }
