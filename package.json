@@ -1,6 +1,6 @@
 {
     "name":     "jazzy",
-    "version":  "0.3.4",
+    "version":  "0.3.5",
     "description": "Web framework which makes your apps swing",
     "keywords": ["web", "framework"],
     "homepage": "http://github.com/raphaelmonrouzeau/jazzy",
