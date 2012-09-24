@@ -7,6 +7,8 @@ var util    = require("util")
 
 var Fetcher = exports = module.exports = function()
 {
+    this.readable = true;
+    this.writable = true;
     Stream.call(this);
 };
 util.inherits(Fetcher, Stream);
@@ -33,16 +35,16 @@ Fetcher.prototype.wrap = function(factory)
         self.onData.call(self, chunk);
     })
     .on("close", function(error) {
-        self.onClose.call(this, error);
+        self.onClose.call(self, error);
     })
     .on("drain", function() {
-        self.onDrain.call(this);
+        self.onDrain.call(self);
     })
     .on("pipe", function(src) {
-        self.onPipe.call(this, src);
+        self.onPipe.call(self, src);
     })
     .on("end", function() {
-        self.onEnd.call(this);
+        self.onEnd.call(self);
     });
 };
 
@@ -68,8 +70,9 @@ Fetcher.prototype.open = function(factory, cb)
 Fetcher.prototype.write = function(chunk, encoding, fd)
 {
     if (this.$stream)
-        this.$stream.write(chunk, encoding, fd);
+        return this.$stream.write(chunk, encoding, fd);
     //Stream.write.call(this, chunk, encoding, fd);
+    return false;
 };
 
 Fetcher.prototype.pause = function()
@@ -86,11 +89,11 @@ Fetcher.prototype.resume = function()
     Stream.resume.call(this);
 };
 
-Fetcher.prototype.end(chunk, encoding)
+Fetcher.prototype.end = function(chunk, encoding)
 {
     if (this.$stream)
         this.$stream.end(chunk, encoding);
-    Stream.end.call(this);
+    Stream.end.call(this, chunk, encoding);
 };
 
 Fetcher.prototype.destroy = function()
@@ -112,4 +115,25 @@ Fetcher.prototype.setEncoding = function(encoding)
     if (this.$stream)
         this.$stream.setEncoding(encoding);
     return this;
+};
+
+Fetcher.prototype.pipe = function(dest, options)
+{
+    var self = this;
+
+    options = options || {};
+
+    this.on("data", function(data) {
+        var ready = dest.write(data);
+        if (ready === false) {
+            self.pause();
+            dest.once("drain", self.resume.bind(self));
+        }
+    });
+
+    this.on("end", function() {
+        dest.end();
+    });
+
+    return dest;
 };
