@@ -5,18 +5,24 @@ var util                = require("util")
 var SaxParser = exports = module.exports = function()
 {
     var parser      = this.parser = sax.parser()
-      , self        = this;
-
+      , self        = this
+      , callback    = function(){ self.callback.apply(self, arguments); };
+    
     parser.ontext = function(text) {
-        self.emit("text", text, function(){ self.callback.apply(self, arguments); });
+        self.emit("text", text, callback);
     };
 
     parser.onopentag = function(node) {
-        self.emit("opentag", node, function(){ self.callback.apply(self, arguments); });
+        self.emit("opentag", node, callback);
     };
 
     parser.onclosetag = function(name) {
-        self.emit("closetag", name, function(){ self.callback.apply(self, arguments); });
+        self.emit("closetag", name, callback);
+    };
+
+    parser.onend = function() {
+        self.emit("finished", callback);
+        self.emit("end");
     };
 
     Stream.call(this);
