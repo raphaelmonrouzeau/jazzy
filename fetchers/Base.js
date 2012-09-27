@@ -7,11 +7,31 @@ var util    = require("util")
 
 var Fetcher = exports = module.exports = function()
 {
+    var self = this;
+
     this.readable = true;
     this.writable = true;
     Stream.call(this);
+
+    [].push.call(arguments, function(err, stream) {
+        if (err)
+            return self.emit("error", err);
+        self.validate.call(self, stream, function(err) {
+            if (err)
+                return self.emit("error", err);
+            self.$stream = self.wrap(stream);
+            self.start();
+        });
+    });
+
+    this.open.apply(this, arguments);
 };
 util.inherits(Fetcher, Stream);
+
+Fetcher.prototype.start = function()
+{
+    return this;
+};
 
 /** Checks response.
  *
@@ -21,13 +41,14 @@ util.inherits(Fetcher, Stream);
 Fetcher.prototype.validate = function(stream, cb)
 {
     cb(null);
+    return this;
 };
 
-Fetcher.prototype.wrap = function(factory)
+Fetcher.prototype.wrap = function(stream)
 {
     var self = this;
 
-    return factory()
+    return stream
     .on("error", function(error) {
         self.onError.call(self, error);
     })
@@ -54,6 +75,13 @@ Fetcher.prototype.onClose = function(error) { this.emit("close", error); };
 Fetcher.prototype.onDrain = function()      { this.emit("drain");        };
 Fetcher.prototype.onPipe  = function(src)   { this.emit("pipe", src);    };
 Fetcher.prototype.onEnd   = function()      { this.emit("end");          };
+
+Fetcher.prototype.initialize = function()
+{
+    var self = this;
+
+    
+};
 
 Fetcher.prototype.open = function(factory, cb)
 {

@@ -4,7 +4,7 @@ var util    = require("util")
 
 var HttpFetcher = exports = module.exports = function()
 {
-    Fetcher.call(this);
+    Fetcher.apply(this, arguments);
 };
 util.inherits(HttpFetcher, Fetcher);
 
@@ -36,7 +36,7 @@ util.inherits(HttpFetcher, Fetcher);
  *   request. Defaults to ''.
  */
 
-HttpFetcher.prototype.open = function(params)
+HttpFetcher.prototype.open = function(params, cb)
 {
     var self = this
       , requestBody = params.requestBody || '';
@@ -44,52 +44,11 @@ HttpFetcher.prototype.open = function(params)
     delete params.requestBody;
 
     this.$request = http.request(params, function(response) {
-        self.validate.call(this, response, function(err) {
-            if (err)
-                return self.emit("error", err);
-            response.setEncoding("utf8");
-            response.on("error", function(err) {
-                self.emit("error", err);
-            });
-            response.on("data", function(chunk) {
-                self.emit("data", chunk);
-            });
-            response.on("close", function(err) {
-                self.emit("error", err);
-            });
-            response.on("end", function() {
-                self.emit("end");
-            });
-            self.$response = response;
-            self.emit("begin");
-        });
-    });
-    //function nthNextTick(n,f)
-    //{
-    //    if (n===0)
-    //        f();
-    //    else
-    //        process.nextTick(function(){nthNextTick(n-1,f);});
-    //}
-    //nthNextTick(0,function(){console.log("======================\nrequest\n",self.$request);});
-    //nthNextTick(2,function(){console.log("======================\nrequest\n",self.$request);});
-    //nthNextTick(6,function(){console.log("======================\nrequest\n",self.$request);});
-    //nthNextTick(12,function(){console.log("======================\nrequest\n",self.$request);});
-    //nthNextTick(24,function(){console.log("======================\nrequest\n",self.$request);});
-    this.$request.on("error", function(err) {
-        self.emit("error", err);
+        cb(null, response);
+    }).on("error", function(err) {
+        cb(err);
     });
     this.$request.end(requestBody);
     return this;
-};
-
-HttpFetcher.prototype.pause = function()
-{
-    this.$response.pause();
-};
-
-HttpFetcher.prototype.resume = function()
-{
-    this.$response.resume();
 };
 

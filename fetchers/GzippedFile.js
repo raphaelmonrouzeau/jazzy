@@ -3,70 +3,11 @@ var util    = require("util")
   , zlib    = require("zlib")
   , Fetcher = require("./Base");
 
-var GzippedFileFetcher = exports = module.exports = function(path, params)
+var GzippedFileFetcher = exports = module.exports = function()
 {
-    Fetcher.call(this);
-    params = params || {};
-
-    if (typeof path === "object") {
-        params = path;
-        path = params.path;
-        delete params.path;
-    }
-
-    var self = this;
-
-    this.open(function() {
-        var gzipped = self.$gzipped = fs.createReadStream(path, params)
-            .on("error", function(err) { self.emit("error", err); });
-        return gzipped.pipe(zlib.createGunzip());
-    }, function(stream) {
-        self.$gzipped.resume();
-    });
-
-    //var self = this
-    //  , stream = this.$stream = fs.createReadStream(path, params)
-    //  , pipe = this.$pipe = stream.pipe(zlib.createGunzip());
-
-    //this.validate(stream, function(err) {
-    //    //pipe.setEncoding("utf8");
-    //    pipe.on("error", function(err) {
-    //        self.emit("error", err);
-    //    });
-    //    pipe.on("data", function(chunk) {
-    //        self.emit("data", chunk);
-    //    });
-    //    pipe.on("close", function(err) {
-    //        self.emit("error", err);
-    //    });
-    //    pipe.on("end", function() {
-    //        self.emit("end");
-    //    });
-    //});
-    
-    //console.log("streams:");
-    //console.log(this.$stream);
-    //console.log("streams:");
-    //console.log(this.$pipe);
-
-    //this.emit("begin");
-    //stream.resume();
-    //return this;
+    Fetcher.apply(this, arguments);
 };
 util.inherits(GzippedFileFetcher, Fetcher);
-
-GzippedFileFetcher.prototype.setEncoding = function(encoding)
-{
-    this.encoding = encoding;
-    return this;
-};
-
-GzippedFileFetcher.prototype.onData = function(chunk)
-{
-    if (this.encoding)
-        chunk = chunk.toString(this.encoding);
-    this.emit("data", chunk);
-};
 
 /*
  * Alternatively you can open with ``params`` only if you provide path within it. 
@@ -84,16 +25,46 @@ GzippedFileFetcher.prototype.onData = function(chunk)
  * - path: path of file.
  */
 
-//GzippedFileFetcher.prototype.open = function(path, params)
-//{
-//};
-//
-//GzippedFileFetcher.prototype.pause = function()
-//{
-//    this.$stream.pause();
-//};
-//
-//GzippedFileFetcher.prototype.resume = function()
-//{
-//    this.$stream.resume();
-//};
+GzippedFileFetcher.prototype.open = function(path, params, cb)
+{
+    var self = this;
+
+    params = params || {};
+    if (arguments.length === 2) {
+        cb = params;
+    }
+    if (typeof path === "object") {
+        params = path;
+        path = params.path;
+        delete params.path;
+    }
+    
+    try {
+        var gzipped = this.$gzipped = fs.createReadStream(path, params);
+    } catch (e) {
+        cb(e);
+        return this;
+    }
+
+    cb(null, gzipped.pipe(zlib.createGunzip()));
+
+    return this;
+};
+
+GzippedFileFetcher.prototype.start = function()
+{
+    this.$gzipped.resume();
+};
+
+GzippedFileFetcher.prototype.setEncoding = function(encoding)
+{
+    this.encoding = encoding;
+    return this;
+};
+
+GzippedFileFetcher.prototype.onData = function(chunk)
+{
+    if (this.encoding)
+        chunk = chunk.toString(this.encoding);
+    this.emit("data", chunk);
+};

@@ -2,12 +2,17 @@ var util                = require("util")
   , Stream              = require("stream").Stream
   , sax                 = require("sax");
 
-var SaxParser = exports = module.exports = function()
+var SaxParser = exports = module.exports = function(attributes)
 {
     var parser      = this.parser = sax.parser()
       , self        = this
       , callback    = function(){ self.callback.apply(self, arguments); };
-    
+ 
+    attributes = attributes || {};
+    Object.keys(attributes).forEach(function(key) {
+        this[key] = attributes[key];
+    }, this);
+
     parser.ontext = function(text) {
         self.emit("text", text, callback);
     };
@@ -46,4 +51,26 @@ SaxParser.prototype.end = function(chunk, encoding)
     if (chunk !== undefined)
         this.write(chunk, encoding);
     this.parser.close();
+};
+
+
+SaxParser.prototype.pipe = function(dest, options)
+{
+    var self = this;
+
+    options = options || {};
+
+    this.on("data", function(data) {
+        var ready = dest.write(data);
+        if (ready === false) {
+            self.pause();
+            dest.once("drain", self.resume.bind(self));
+        }
+    });
+
+    this.on("end", function() {
+        dest.end();
+    });
+
+    return dest;
 };
