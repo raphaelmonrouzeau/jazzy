@@ -7,15 +7,35 @@ var util    = require("util")
 
 var Fetcher = exports = module.exports = function()
 {
-    var self = this;
+    var self = this
+      , args = arguments;
 
     this.readable = true;
     this.writable = true;
+    this.retryCount = 0;
+    this.retryLimit = 4;
     Stream.call(this);
+    process.nextTick(function(){self.tryToOpen.apply(self, args);});
+};
+util.inherits(Fetcher, Stream);
 
-    [].push.call(arguments, function(err, stream) {
-        if (err)
-            return self.emit("error", err);
+Fetcher.prototype.delay = function()
+{
+    return 92+this.retryCount*128;
+};
+
+Fetcher.prototype.tryToOpen = function()
+{
+    var self = this
+      , args = arguments;
+
+    [].push.call(args, function(err, stream) {
+        if (err) {
+            if (self.retryCount > self.retryLimit)
+                return self.emit("error", err);
+            setTimeout(function() { self.open.apply(self, args); }, self.delay());
+            return ++self.retryCount;
+        }
         self.validate.call(self, stream, function(err) {
             if (err)
                 return self.emit("error", err);
@@ -23,10 +43,8 @@ var Fetcher = exports = module.exports = function()
             self.start();
         });
     });
-
-    this.open.apply(this, arguments);
+    this.open.apply(this, args);
 };
-util.inherits(Fetcher, Stream);
 
 Fetcher.prototype.start = function()
 {

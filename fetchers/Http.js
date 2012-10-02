@@ -38,6 +38,7 @@ util.inherits(HttpFetcher, Fetcher);
 
 HttpFetcher.prototype.open = function(params, cb)
 {
+    console.log("TRYTOOPENOPEN");
     var self = this
       , requestBody = params.requestBody || '';
     
