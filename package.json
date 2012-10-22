@@ -1,6 +1,6 @@
 {
     "name":     "jazzy",
-    "version":  "0.3.10",
+    "version":  "0.3.12",
     "description": "Web framework which makes your apps swing",
     "keywords": ["web", "framework"],
     "homepage": "http://github.com/raphaelmonrouzeau/jazzy",
@@ -23,6 +23,7 @@
         "vows":             "latest",
         "sax":              "latest",
         "coffee-script":    "latest",
-        "eco":              "latest"
+        "eco":              "latest",
+        "redis":            "latest"
     }
 }
