@@ -1,4 +1,6 @@
-var redis       = require('redis');
+var redis       = require('redis')
+  , util        = require("util")
+  , winston     = require("winston");
 
 function hmgetResultToObject(keys, fields)
 {
@@ -85,6 +87,45 @@ module.exports = exports = function(port_arg, host_arg, options)
             var cb = [].pop.call(arguments);
 
             client.exists(keyfunc.apply(this, arguments), cb);
+        };
+        return func;
+    };
+
+    client.logcbfunc = function(keyfunc)
+    {
+        var func = function(name, kparts, record, next)
+        {
+            var operation
+              , key
+              , meta = {};
+        
+            if (!name) {
+                operation  = "operation";
+            } else {
+                operation  = name;
+            }
+        
+            if (!kparts) {
+                key = "hive "+keyfunc("");
+            } else {
+                key = keyfunc.apply(this,kparts);
+            }
+            
+            if (record !== undefined) {
+                meta.givenValue = record;
+            }
+        
+            var cb = function(err,res)
+            {
+                if (err)
+                    return winston.error(util.format("Redis %s error on %s: %s", operation, key, err.toString()),
+                                         {err:err,meta:meta});
+                winston.silly(util.format("Redis %s success on %s", operation, key),
+                              {res:res,meta:meta});
+                if (next)
+                    next();
+            };
+            return cb;
         };
         return func;
     };
