@@ -44,6 +44,8 @@ HttpFetcher.prototype.open = function(params, cb)
     delete params.requestBody;
 
     this.$request = http.request(params, function(response) {
+        if (self.encoding)
+            response.setEncoding(self.encoding);
         cb(null, response);
     }).on("error", function(err) {
         cb(err);
@@ -52,3 +54,8 @@ HttpFetcher.prototype.open = function(params, cb)
     return this;
 };
 
+HttpFetcher.prototype.setEncoding = function(encoding)
+{
+    this.encoding = encoding;
+    return this;
+};
