@@ -1,4 +1,5 @@
-var path    = require("path");
+var path    = require("path")
+  , _       = require("underscore");
 
 var config = module.exports = {};
 
@@ -31,23 +32,24 @@ Object.defineProperty(config, '$readTo', {
     configurable:   true,
     value: function(filePath, keyPath, defaults)
     {
-        defaults = defaults || {};
-
+        var rv = false;
         try {
             var basedir  = config.$basedir || process.cwd()
-              , settings = require(path.join(basedir, filePath));
-        } catch(e) {
-            settings = defaults;
+              , settings = require(path.join(basedir, filePath))
+              , rv = true;
+        } catch (e) {
+            if (defaults)
+                settings = defaults;
+            else
+                throw e;
         }
 
         var parts  = keyPath.split('.')
           , target = config
           , key    = parts.splice(-1,1)[0];
 
-        if (key === '')
+        while (key === '')
             key = parts.splice(-1,1)[0];
-        if (key)
-            parts.push(key);
 
         for (var i=0,l=parts.length; i<l; i++) {
             var part = parts[i];
@@ -59,9 +61,12 @@ Object.defineProperty(config, '$readTo', {
             target = target[part];
         }
 
-        Object.keys(settings).forEach(function(k) {
-            target[k] = settings[k];
-        }, config);
+        if (key !== undefined)
+            target[key] = _.clone(settings);
+        else
+            _.extend(target, settings);
+
+        return rv;
     }
 });
 
