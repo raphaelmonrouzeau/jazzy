@@ -130,5 +130,36 @@ module.exports = exports = function(port_arg, host_arg, options)
         return func;
     };
 
+    client.setter = function(options, keyfunc)
+    {
+        var func = function()
+        {
+            var now = (new Date()).toJSON()
+              , cb  = [].pop.call(arguments)
+              , prv = [].pop.call(arguments)
+              , key = keyfunc.apply(this, arguments)
+              , obj;
+   
+            if (options.createdAt || options.updatedAt) { 
+                obj = {};
+                Object.keys(prv).forEach(function(k) { obj[k]=prv[k] });
+                if (options.createdAt)
+                    obj.createdAt = now;
+                if (options.updatedAt)
+                    obj.updatedAt = now;
+            }
+            cache.hmset(key, obj, function(err, rep) {
+                if (err) return cb(err);
+                if (options.expireIn) {
+                    cache.expire([key, options.expireIn.toString()], function(err, rep) {
+                        if (err) /* log err */;
+                    });
+                }
+                cb(null, rep);
+            });
+        };
+        return func;
+    };
+
     return client;
 };

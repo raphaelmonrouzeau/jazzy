@@ -12,7 +12,7 @@ var LENGTH = 12000;
 contract.addBatch({
     "After creating a temporary file": {
         topic: function() {
-            temp.open({prefix:"vows-sfrshoppingd-",suffix:".txt"}, this.callback);
+            temp.open({prefix:"vows-jazzy-",suffix:".txt"}, this.callback);
         },
         "And filling it": {
             topic: function(tmp) {

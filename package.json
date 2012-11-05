@@ -1,6 +1,6 @@
 {
     "name":     "jazzy",
-    "version":  "0.3.16",
+    "version":  "0.3.17",
     "description": "Web framework which makes your apps swing",
     "keywords": ["web", "framework"],
     "homepage": "http://github.com/raphaelmonrouzeau/jazzy",
@@ -16,6 +16,8 @@
     },
     "dependencies": {
         "underscore":       "latest",
+        "email-templates":  "latest",
+        "nodemailer":       "latest",
         "winston":          "latest",
         "formaline":        "latest",
         "argumentum":       "latest",
