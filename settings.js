@@ -34,9 +34,14 @@ Object.defineProperty(config, '$readTo', {
     {
         var rv = false;
         try {
-            var basedir  = config.$basedir || process.cwd()
-              , settings = require(path.join(basedir, filePath))
-              , rv = true;
+            var basedir, settings, rv;
+            if (filePath[0] !== "/") {
+                basedir  = config.$basedir || process.cwd();
+                settings = require(path.join(basedir, filePath));
+            } else {
+                settings = require(filePath);
+            }
+            rv = true;
         } catch (e) {
             if (defaults)
                 settings = defaults;
