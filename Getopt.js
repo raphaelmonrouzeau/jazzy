@@ -63,9 +63,9 @@ Getopt.prototype.parse = function(argv)
 
     if (this.hasArgs) {
         if (args.length === 0) {
-            usage.showUsage("Requires at least one argument", 253);
+            this.usage.showUsage("Requires at least one argument", 253);
         } else if (!this.args.hasOwnProperty(args[0])) {
-            usage.showUsage("Unknown non option argument", 252);
+            this.usage.showUsage("Unknown non option argument", 252);
         }
     }
 
