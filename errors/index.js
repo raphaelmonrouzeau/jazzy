@@ -28,13 +28,14 @@ var Define = exports.Define = Error.Define = (function() {
             }
             define(self, 'arguments', undefined);
             define(self, 'type', undefined);
+            define(self, '$set', function(p,v){define(self,p,v);});
             if (typeof init == 'function') {
                 init.apply(self, arguments);
             }
             return self;
         }
         eval('Define = function ' + name + '() {' +
-            'return build.apply(this, arguments); }');
+             'return build.apply(this, arguments); }');
         Define.prototype = Object.create(Error.prototype);
         define(Define.prototype, 'constructor', Define);
         for (var key in proto) {
